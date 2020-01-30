@@ -7,3 +7,4 @@
 		self.currentCubeNPC = npcVNUM
 		if app.CUBE_RELOAD_FIX and reload:
 			self.cubeInformation.clear()
+			self.interface.wndCube.ClearOldSlots()
