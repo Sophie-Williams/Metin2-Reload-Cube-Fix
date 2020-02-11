@@ -1,30 +1,28 @@
-//Find
-	if (false == s_isInitializedCubeMaterialInformation)
-	{
-		Cube_InformationInitialize();
+///Add new Func
+#if defined(CUBE_RELOAD_FIX)
+#include "desc.h"
+#include "desc_manager.h"
+static void CubeReload()
+{
+	cube_info_map.clear();
+	cube_result_info_map_by_npc.clear();
+	Cube_InformationInitialize();
+	for (DESC_MANAGER::DESC_SET::const_iterator it = DESC_MANAGER::instance().GetClientSet().begin(); it != DESC_MANAGER::instance().GetClientSet().end(); ++it) {
+		LPCHARACTER ch = (*it)->GetCharacter();
+		if (ch) {
+			Cube_close(ch);
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "cube reload");
+		}
 	}
-	
-///Add Above(!)
-#if defined(CUBE_RELOAD_FIX)
-	const auto reload = !s_isInitializedCubeMaterialInformation;
+}
 #endif
 
 //Find
-	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube open %d", npc->GetRaceNum());
-	
-///Change
-#if defined(CUBE_RELOAD_FIX)
-	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube open %d %d", npc->GetRaceNum(), reload);
-#else
-	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube open %d", npc->GetRaceNum());
-#endif
-
-//Find
-	s_cube_proto.clear();
+	if (false == Cube_load(file_name))
+		sys_err("Cube_Init failed");
 	
 ///Add
 #if defined(CUBE_RELOAD_FIX)
-	cube_info_map.clear();
-	cube_result_info_map_by_npc.clear();
-	s_isInitializedCubeMaterialInformation = false;
+	if (s_isInitializedCubeMaterialInformation)
+		CubeReload();
 #endif
